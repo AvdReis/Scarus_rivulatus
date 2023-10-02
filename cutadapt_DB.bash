@@ -4,18 +4,31 @@
 #xxx.tax - ID*tab*taxonomyDetails - as used in DADA2
 #yyy.fasta - >ID*newline*sequence - as used in DADA2
 
-for algae_phylum in $(cat algae_phylum); do grep $algae_phylum /path/to/Databases/xxx.tax | sed 's/\t.*//' > ${algae_phylum}_tax.txt; grep -A 1 -Fwf ${algae_phylum}_tax.txt /path/to/Databases/yyy.fasta | sed '/--/d' > ${algae_phylum}_fasta.txt; done
+for algae_phylum in $(cat algae_phylum.txt); do grep $algae_phylum /path/to/Databases/xxx.tax | sed 's/\t.*//' > ${algae_phylum}_tax.txt; grep -A 1 -Fwf ${algae_phylum}_tax.txt /path/to/Databases/yyy.fasta | sed '/--/d' > ${algae_phylum}.fasta; done
+
+#You could append the algae databases here or change the grep to search multiple phyla
 
 #to test primers individually or in pairs against a database
 
-#
+#primer_pairs.txt - PairName_Forward_ReverseComplement
+#Here the database sequence entries are in the forward direction
 
-for primer in $(cat primers2test.txt); do cutadapt --discard-untrimmed -e 0 --no-indels -g "$primer;min_overlap=${#primer}" -o xxx.fasta Ochrophyta.fasta >> heads.txt; done
+for pp in $(cat primer_pairs.txt); do Pair=$(echo $pp | sed 's/_.*//'); Forward=$(echo "$pp" | cut -d '_' -f 2); Reverse=$(echo $pp | sed 's/.*_//g'); cutadapt \
+--discard-untrimmed \
+--action=trim \
 -e 0 \ #maximum error rate – no errors allowed between primer and sequence
 --no-indels \ #no insertions or deletions allowed
--g primer_sequence;min_overlap=no_primer_bp \ #primer to test –reverse primer input as reverse complement
--o output_file_name.fasta 
-path_to_database
+-g "${Pair}_linked=$Forward;min_overlap=${#Forward};required...$Reverse;min_overlap=${#Reverse};required" \ #primer set to test – reverse primer input as reverse complement
+-g "${Pair}_F_only=$Forward;min_overlap=${#Forward}"
+-g "${Pair}_RevComp_only=$Reverse;min_overlap=${#Reverse}"
+-o "${Pair}.fasta" \ #this provides a curated database based on the primer set provided
+/path/to/algae/database.fasta; done > ${Paired}_cutadapt.slurm
 
-for pp in $(cat primer_pairs); do Pair=$(echo $pp | sed 's/_.*//'); Forward=$(echo "$pp" | cut -d '_' -f 2); Reverse=$(echo $pp | sed 's/.*_//g'); cutadapt --discard-untrimmed --action=trim -e 0 --no-indels -g "$Pair=$Forward;min_overlap=${#Forward};required...$Reverse;min_overlap=${#Reverse};required" -o "${Pair}.txt" Database.fasta; done
-do Pair=$(echo $pp | sed 's/_.*//'); Forward=$(echo "$pp" | cut -d '_' -f 2); Reverse=$(echo $pp | sed 's/.*_//g'); DB_array=("Chl" "Rho" "Och"); i=0; len=${#DB_array[@]}; while [ $i -lt $len ]; do cutadapt --discard-untrimmed --action=trim -e 0 --no-indels -g "$Pair=$Forward;min_overlap=${#Forward};required...$Reverse;min_overlap=${#Reverse};required" -o "${Pair}.txt" "${DB_array[$i]}.fasta" > "${Pair}_${DB_array[$i]}_slurm.txt"; let i++; done; done
+#the slurm file provides stats on how many sequences matched the various primer variations
+#To note, the database is investigated sequentially and thus if matched for the linked set, it cannot be matched for any other variation
+
+#If wanting to use the curated database in software like DADA2, then using something like:
+grep '^>' Paired_DB.fasta
+sed -i 's/^>//' Paired_DB.fasta
+grep -Fwf Paired_DB.fasta tax_file.txt
+#can pull out the tax IDs for the curated database
