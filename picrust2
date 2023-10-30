@@ -4,6 +4,17 @@ module load QIIME2/2021.2
 sed -i 's/ /\t/g' Sriv_16S.tsv
 
 biom convert -i Sriv_16S.tsv \
- -o Sriv_16S.hdf5.biom.txt \
+ -o Sriv_16S.hdf5.biom \
  --to-hdf5
 
+#import biom
+qiime tools import \
+--input-path Sriv_16S.hdf5.biom \
+--type 'FeatureTable[Frequency]' \
+--output-path feature-table.qza
+
+#import fasta
+qiime tools import \
+--input-path Sriv_16S.fasta \
+--output-path rep-seqs.qza \
+--type 'FeatureData[Sequence]'
