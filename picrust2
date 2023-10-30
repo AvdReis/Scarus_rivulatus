@@ -18,3 +18,9 @@ qiime tools import \
 --input-path Sriv_16S.fasta \
 --output-path rep-seqs.qza \
 --type 'FeatureData[Sequence]'
+
+qiime picrust2 full-pipeline \
+--i-table feature-table.qza \
+--i-seq rep-seqs.qza \
+--output-dir picrust2_output \
+--p-hsp-method pic
