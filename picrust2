@@ -19,6 +19,8 @@ qiime tools import \
 --output-path rep-seqs.qza \
 --type 'FeatureData[Sequence]'
 
+#Needed to load newer Q2 for picrust to work
+module load QIIME2/2023.5
 qiime picrust2 full-pipeline \
 --i-table feature-table.qza \
 --i-seq rep-seqs.qza \
