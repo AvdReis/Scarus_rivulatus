@@ -2,6 +2,15 @@ library(dplyr)
 library(tidyr)
 
 ####NOTES####
+#The SILVA database used was 138.1
+#https://www.arb-silva.de/documentation/release-1381/
+#https://www.arb-silva.de/no_cache/download/archive/release_138.1/Exports/
+#S[L]SURef_NR99
+#eg - SILVA_138.1_SSURef_NR99_tax_silva.fasta.gz
+
+#Need to convert the database to get the fasta and taxonomy files as QIIME2 requires for the RDP classifier
+
+
 #taxo.tsv is the tax levels from SILVA
 #https://www.arb-silva.de/no_cache/download/archive/release_138.1/Exports/taxonomy/
 #tax_slv_ssu_138.1.txt.gz
