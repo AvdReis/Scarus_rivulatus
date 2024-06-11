@@ -1,10 +1,19 @@
 library(dplyr)
 library(tidyr)
-#Mothur
-map.in <- read.table("C:/Users/Aimz/Dropbox/PF_NGS/SILVA/taxo.tsv",header=F,sep="\t",stringsAsFactors=F)
+
+####NOTES####
+#taxo.tsv is the tax levels from SILVA
+#https://www.arb-silva.de/no_cache/download/archive/release_138.1/Exports/taxonomy/
+#tax_slv_ssu_138.1.txt.gz
+
+#Mothur forum
+#Some of the code has been copied and modified from
+#https://raw.githubusercontent.com/rec3141/diversity-scripts/master/convert_silva_taxonomy.r
+############
+
+map.in <- read.table("/path_to/taxo.tsv",header=F,sep="\t",stringsAsFactors=F)
 map.in <- map.in[,c(1,3)]
 colnames(map.in) <- c("taxlabel","taxlevel")
-
 
 #fix Escherichia nonsense
 map.in$taxlevel[which(map.in$taxlabel=="Bacteria;Proteobacteria;Gammaproteobacteria;Enterobacteriales;Enterobacteriaceae;Escherichia;")] <- "genus"
@@ -96,3 +105,31 @@ for(i in 1:nrow(tax.out)) {
   tax.final <- rbind(tax.final, row)
 }
 
+tax.final <- tax.out
+for (i in levels_fill$LEVEL) {
+  onedown <- levels_fill %>% filter(LEVEL %in% i) %>% .[1,1]
+  tax.final[[i]] <- if_else(is.na(tax.final[[i]])==T, paste(i, tax.final[[onedown]], sep="_"), tax.final[[i]])
+}
+
+
+#For rdp classifier use 6 linnean
+SILVA_lin.tax <- tax.final[,c("V1", "p", "c", "o", "f", "g", "s")]
+SILVA_lin.tax <- SILVA_lin.tax %>% mutate(tax_all = "")
+for (i in 2:ncol(SILVA_lin.tax)) {
+  if (i < 7) {
+    SILVA_lin.tax$tax_all <- paste(SILVA_lin.tax$tax_all, SILVA_lin.tax[[i]], ";", sep = "")
+  }
+  
+}
+
+#for rpd classifier using all
+tax_final_SILVA.tax <- tax.final
+tax_final_SILVA.tax <- tax_final_SILVA.tax %>% mutate(tax_all = "")
+
+for (i in 2:ncol(tax_final_SILVA.tax)) {
+  if (i < 23) {
+    tax_final_SILVA.tax$tax_all <- paste(tax_final_SILVA.tax$tax_all, tax_final_SILVA.tax[[i]], ";", sep = "")
+  }
+}
+
+write.table(tax_final_SILVA.tax[,c(1,23)], file = "./all_levels_given_SILVA.tax", quote = F, col.names = F, row.names = F)
