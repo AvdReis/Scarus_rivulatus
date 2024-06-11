@@ -5,7 +5,7 @@
 #SBATCH --mem-per-cpu=10GB
 #SBATCH --cpus-per-task=1
 
-module load cutadapt/3.3-gimkl-2020a-Python-3.8.2
+module load cutadapt/2.10-gimkl-2020a-Python-3.8.2
 
 ####NOTES####
 #Please note, ALL primers have been given in this script and the will need to be adjusted for the different raw data files. This could be written into a loop.
