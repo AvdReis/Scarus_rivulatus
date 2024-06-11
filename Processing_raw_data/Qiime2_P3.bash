@@ -14,6 +14,7 @@ export TMPDIR
 ####NOTES####
 #Again, this could be made into a loop - calling the primer and the respective database.
 #This is the generic code used, and at the time was used independently and not in a loop.
+
 #Primer  Forward  Reverse
 #FD  TTAAAAAGCKCGTAGTTG  ACTTTCGTTCTTGAT
 #Zim  ATTCCAGCTCCAATAGCG  GACTACGATGGTATCTAATC
@@ -22,6 +23,7 @@ export TMPDIR
 #Sherwood  GGACAGAAAGACCCTATGAA  TCAGCCTGTTATCCCTAGAG
 #Herlemann  CCTACGGGNGGCWGCAG  GACTACHVGGGTATCTAATCC
 
+#SILVA databases used SSURef_NR99
 ####
 
 #Training a Naive Bayes classifier - assigning taxonomy from different databases
