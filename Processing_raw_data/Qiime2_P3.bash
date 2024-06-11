@@ -24,6 +24,8 @@ export TMPDIR
 #Herlemann  CCTACGGGNGGCWGCAG  GACTACHVGGGTATCTAATCC
 
 #SILVA databases used SSURef_NR99
+#The taxonomy file was converted to have all the levels accounted for
+#See conversion script for more details
 ####
 
 #Training a Naive Bayes classifier - assigning taxonomy from different databases
