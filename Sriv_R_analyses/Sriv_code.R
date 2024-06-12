@@ -114,7 +114,7 @@ df_16S %>% summarise(ASVs = length(unique(Feature.ID)), Reads = sum(Reads_nrm))
 Cyano_tree_seq <- df_16S %>% filter(grepl("Cyanobacteriota", Taxon)==T) %>% filter(grepl("Chloroplast", Taxon)==F) %>% .[,c("Feature.ID")] %>% unique()
 
 #Get sequences from 16S dna-sequences.fasta output from Qiime2
-#write.table(x = Cyano_tree_seq, file = "../Cyano_tree/Cyan_seq_filt.txt", quote = F, row.names = F, col.names = F)
+#write.table(x = Cyano_tree_seq, file = "../Cyano_tree/Cyan_filt.txt", quote = F, row.names = F, col.names = F)
 #copy and paste into nano bash file - doesn't seem to work if directly uploaded
 #grep -A 1 -Fwf Cyano_filt.txt /path_to/dna-sequences.fasta > Cyano_seq.fasta
 #sed -i '/--/d' Cyano_seq.fasta
@@ -715,7 +715,7 @@ ggsave(filename = "Bubble_GS_nonalgae.jpeg", plot = Bubble_GS_nonalgae, path = "
 
 #Using this output
 #Stoeck
-FDvStoeck <- read.delim("../VSearch/grep_exact_match/FDvSTOECK.txt", header = F, "\t")
+FDvStoeck <- read.delim("../grep_exact_match/FDvSTOECK.txt", header = F, "\t")
 FDvStoeck_match <- filter(FDvStoeck, V2 != "")
 FDvStoeck_nomatch <- filter(FDvStoeck, V2 == "")
 FDvStoeck_nomatch <- FDvStoeck_nomatch %>% rename(FD = 1, Match.ID = 2)
@@ -740,7 +740,7 @@ FDvStoeck <- rbind(FDvStoeck_nomatch, FDvStoeck_df)
 FDvStoeck$Primer <- rep("Stoeck")
 
 #Zhan
-FDvZhan <- read.delim("../VSearch/grep_exact_match/FDvZhan.txt", header = F, "\t")
+FDvZhan <- read.delim("../grep_exact_match/FDvZhan.txt", header = F, "\t")
 FDvZhan_match <- filter(FDvZhan, V2 != "")
 FDvZhan_nomatch <- filter(FDvZhan, V2 == "")
 FDvZhan_nomatch <- FDvZhan_nomatch %>% rename(FD = 1, Match.ID = 2)
@@ -765,7 +765,7 @@ FDvZhan <- rbind(FDvZhan_nomatch, FDvZhan_df)
 FDvZhan$Primer <- rep("Zhan")
 
 #Zim
-FDvZim <- read.delim("../VSearch/grep_exact_match/FDvZim.txt", header = F, "\t")
+FDvZim <- read.delim("../grep_exact_match/FDvZim.txt", header = F, "\t")
 
 FDvZim_match <- filter(FDvZim, V2 != "")
 FDvZim_nomatch <- filter(FDvZim, V2 == "")
