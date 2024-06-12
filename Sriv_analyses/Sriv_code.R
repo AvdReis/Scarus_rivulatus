@@ -1,3 +1,5 @@
+#The code for creating the 16S cyanobacterial tree and grep for 18S sequence matches are also in here
+
 ####Packages and other universal data for analyses####
 library(biomformat)
 library(dplyr)
