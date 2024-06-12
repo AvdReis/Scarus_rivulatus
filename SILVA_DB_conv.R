@@ -40,6 +40,10 @@ grep '^>' SILVA_138.1_SSURef_NR99.fasta > SILVA_138.1_SSURef_NR99.tax
 sed -i 's/ /\t/' SILVA_138.1_SSURef_NR99.tax
 sed -i 's/^>//' SILVA_138.1_SSURef_NR99.tax
 mv SILVA_138.1_SSURef_NR99.tax SILVA_138.1.tax
+
+sed 's/ /_/g' SILVA_138.1.tax > SILVA_138.1_mod.tax
+sed -i 's/;/\t/g' SILVA_138.1_mod.tax
+
 wc -l SILVA_138.1_SSURef_NR99.tax
 
 #rm tax from fasta file
@@ -73,6 +77,7 @@ map.in %>% group_by(taxlabel) %>% summarise(count = length(taxlabel)) %>% filter
 
 # 1 Incertae Sedis         10
 map.in <- filter(map.in, taxlabel != "Incertae_Sedis")
+
 # 5 uncultured              8
 map.in <- filter(map.in, taxlabel != "uncultured")
 
@@ -94,24 +99,15 @@ map.in <- unique(map.in)
 #change noted in original work
 map.in$taxlevel <- if_else(map.in$taxlabel == "RsaHf231", "phylum", map.in$taxlevel)
 
-# bring in the old taxonomic levels from SILVA and remap them using the new levels
-#cd /mnt/c/Users/Aimz/Dropbox/PF_NGS/Jan2021/CyanoSeq_SILVA_tax/
-#sed 's/ /_/g' SILVA_tax.txt > SILVA_tax_mod.txt
-#sed -i 's/;/\t/g' SILVA_tax_mod.txt
+# bring in the taxonomic levels from SILVA and remap them using the new levels
+#should be 21 columns
+tax.in <- read.delim(file = "/path_to/SILVA_138.1_mod.tax",header=F, sep = "\t")
 
-tax.in <- read.delim(file = "C:/Users/Aimz/Dropbox/PF_NGS/Jan2021/CyanoSeq_SILVA_tax/SILVA_tax_mod.txt",header=F, sep = "\t")
-
-
-# library(readxl)
-# test <- read_xlsx(path = "C:/Users/Aimz/Dropbox/PF_NGS/Jan2021/CyanoSeq_SILVA_tax/SILVA_tax_mod.xlsx", sheet = 1, col_names = F)
-  
-tax.in <- 
-tax.in %>% pivot_longer(., cols = 2:21, names_to = "order", values_to = "taxlabel") %>% filter(taxlabel != "" & taxlabel != "uncultured" & taxlabel != "Incertae_Sedis") %>% left_join(., map.in)
+tax.in <- tax.in %>% pivot_longer(., cols = 2:21, names_to = "order", values_to = "taxlabel") %>% filter(taxlabel != "" & taxlabel != "uncultured" & taxlabel != "Incertae_Sedis") %>% left_join(., map.in)
 tax.in <- filter(tax.in, taxlabel != "unidentified")
 
 tax.in <- tax.in %>% mutate(taxlevel = if_else(is.na(taxlevel)==T & grepl("_", taxlabel)==T, "species", taxlevel))
 tax.in <- filter(tax.in, is.na(taxlevel)==F)
-
 
 #selection = c("phylum", "class", "order", "family", "genus", "species")
 #tax.in.df <- tax.in %>% filter(., taxlevel %in% selection)
@@ -133,23 +129,6 @@ tax.out <- tax.in.df %>% rename("V1" = V1, "d" = domain, "spk" = superkingdom, "
 levels_fill <-data.frame(LEVEL_UP = c("d", "spk", "k", "sbk", "mc", "spp", "p", "sbp", "ifp", "spc", "c", "sbc", "ifc", "spo", "o", "sbo", "spf", "f", "sbf", "g"),
                          LEVEL = c("spk", "k", "sbk", "mc", "spp", "p", "sbp", "ifp", "spc", "c", "sbc", "ifc", "spo", "o", "sbo", "spf", "f", "sbf", "g", "s")
 )
-
- test <- tax.out[1:6,]
-# test2 <- c()
-
-tax.final <- c()
-
-for(i in 1:nrow(tax.out)) {
-  row <- tax.out[i,]
-  print(i)
-  for (x in levels_fill$LEVEL) {
-    if (is.na(row[,c(x)])==T) {
-      onedown <- levels_fill %>% filter(LEVEL %in% x) %>% .[1,1]
-      row[,c(x)] <- paste(x, "__", row[,c(onedown)])
-    }
-  }
-  tax.final <- rbind(tax.final, row)
-}
 
 tax.final <- tax.out
 for (i in levels_fill$LEVEL) {
