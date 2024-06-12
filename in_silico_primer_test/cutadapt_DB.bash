@@ -1,19 +1,22 @@
-#make a databases of interest using cutadapt
+to test primers or make a databases of interest using cutadapt
 module load cutadapt/2.10-gimkl-2020a-Python-3.8.2
 
 #algae_phylum.txt - which phyla are to be targeted - each phylum on a newline
 #xxx.tax - ID*tab*taxonomyDetails - as used in DADA2
 #yyy.fasta - >ID*newline*sequence - as used in DADA2
 
+#Grabbing taxa of interest from a database
 for algae_phylum in $(cat algae_phylum.txt); do grep $algae_phylum /path/to/Databases/xxx.tax | sed 's/\t.*//' > ${algae_phylum}_tax.txt; grep -A 1 -Fwf ${algae_phylum}_tax.txt /path/to/Databases/yyy.fasta | sed '/--/d' > ${algae_phylum}.fasta; done
 
 #You could append the algae databases here or change the grep to search multiple phyla
 
-#to test primers individually or in pairs against a database
+#to test primers individually or in pairs against the filtered database
 
 #primer_pairs.txt - PairName_Forward_ReverseComplement
 #Here the database sequence entries are in the forward direction
 
+#Seeing how primers match taxa specific database
+#before running remove any white space and notes after '\'
 for pp in $(cat primer_pairs.txt); do Pair=$(echo $pp | sed 's/_.*//'); Forward=$(echo "$pp" | cut -d '_' -f 2); Reverse=$(echo $pp | sed 's/.*_//g'); cutadapt \
 --discard-untrimmed \
 --action=trim \
