@@ -11,7 +11,7 @@ module load cutadapt/2.10-gimkl-2020a-Python-3.8.2
 #Please note, ALL primers have been given in this script and the will need to be adjusted for the different raw data files. This could be written into a loop.
 
 #raw data directories and primers used:
-#rawdata_16S  rawdata_18S_G1  rawdata_18S_G2
+#rawdata_16S  rawdata_18S_P1  rawdata_18S_P2
 #Herlemann  FD-Bra;Zim  Stoeck;Zhan;Sherwood
 
 #This can also be run in the terminal, as little computing power is needed.
