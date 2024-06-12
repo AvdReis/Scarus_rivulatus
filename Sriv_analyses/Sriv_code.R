@@ -94,6 +94,11 @@ fish_name_change <- data.frame(Fish.ID = c("S240", "S241", "S421", "S422", "S430
                                Fish.ID2 = c("SP1", "SP2", "MR1", "MR2", "ND1", "CR1", "CR3", "CR2")) 
 
 df_16S <- df_16S %>% mutate(Fish.ID = mgsub(Fish.ID, fish_name_change$Fish.ID, fish_name_change$Fish.ID2))
+
+#Supplementary Table S5 - df_16S
+#write.table(df_16S, file = "./16S_ASV_tax.tsv", quote = F, row.names = F, col.names = T, sep = "\t")
+
+df_16S %>% summarise(ASVs = length(unique(Feature.ID)), Reads = sum(Reads_nrm))
 # A tibble: 1 x 2
 # ASVs  Reads
 # <int>  <dbl>
@@ -106,9 +111,6 @@ df_16S %>% summarise(ASVs = length(unique(Feature.ID)), Reads = sum(Reads_nrm))
 #ASVs  Reads
 #<int>  <dbl>
 #  1  1686 115198
-
-#Supplementary Table S5 - df_16S
-#write.table(df_16S, file = "./16S_ASV_tax.tsv", quote = F, row.names = F, col.names = T, sep = "\t")
 
 df_16S %>% summarise(ASVs = length(unique(Feature.ID)), Reads = sum(Reads_nrm))
 
