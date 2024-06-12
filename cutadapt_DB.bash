@@ -1,4 +1,5 @@
-#make a databases of interest
+#make a databases of interest using cutadapt
+module load cutadapt/2.10-gimkl-2020a-Python-3.8.2
 
 #algae_phylum.txt - which phyla are to be targeted - each phylum on a newline
 #xxx.tax - ID*tab*taxonomyDetails - as used in DADA2
@@ -22,13 +23,13 @@ for pp in $(cat primer_pairs.txt); do Pair=$(echo $pp | sed 's/_.*//'); Forward=
 -g "${Pair}_F_only=$Forward;min_overlap=${#Forward}"
 -g "${Pair}_RevComp_only=$Reverse;min_overlap=${#Reverse}"
 -o "${Pair}.fasta" \ #this provides a curated database based on the primer set provided
-/path/to/algae/database.fasta; done > ${Paired}_cutadapt.slurm
+/path/to/algae/database.fasta; done > ${Pair}_cutadapt.slurm
 
 #the slurm file provides stats on how many sequences matched the various primer variations
 #To note, the database is investigated sequentially and thus if matched for the linked set, it cannot be matched for any other variation
 
 #If wanting to use the curated database in software like DADA2, then using something like:
-grep '^>' Paired_DB.fasta
-sed -i 's/^>//' Paired_DB.fasta
-grep -Fwf Paired_DB.fasta tax_file.txt
+grep '^>' ${Pair}.fasta > temp.tax
+sed -i 's/^>//' Paired_DB.tax
+grep -Fwf Paired_DB.tax tax_file.txt > ${Pair}.tax
 #can pull out the tax IDs for the curated database
