@@ -38,7 +38,7 @@ qiime tools import \
 qiime tools import \
   --type 'FeatureData[Taxonomy]' \
   --input-format HeaderlessTSVTaxonomyFormat \
-  --input-path /full_path/SILVA_138.1.tax \
+  --input-path /full_path/all_levels_given_SILVA.tax \
   --output-path rdp_ref_taxonomy.qza
 
 # Extracting the sequence portion we have targeted
