@@ -1,4 +1,4 @@
-to test primers or make a databases of interest using cutadapt
+#to test primers or make a databases of interest using cutadapt
 module load cutadapt/2.10-gimkl-2020a-Python-3.8.2
 
 #algae_phylum.txt - which phyla are to be targeted - each phylum on a newline
